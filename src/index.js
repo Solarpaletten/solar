@@ -1,28 +1,34 @@
 // Импорт необходимых модулей
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');  // Если используется MongoDB, можно удалить если PostgreSQL
 const bodyParser = require('body-parser');
-const routes = require('./routes');  // Подключение маршрутов, если они есть
+const cors = require('cors');
+
+require('dotenv').config();
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
 
 // Инициализация приложения Express
 const app = express();
 
-// Middleware для обработки JSON запросов
+// Middleware для обработки JSON и CORS
 app.use(bodyParser.json());
+app.use(cors());
 
-// Подключение маршрутов, если они есть
-app.use('/api', routes);
-
-// Добавление маршрута для корневого пути
-app.get('/', (req, res) => {
-  res.send('Welcome to the Home Page');
+// Пример маршрута
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'Hello from the backend!' });
 });
 
-// Указание порта для запуска сервера
-const PORT = process.env.PORT || 3000;
-
-// Подключение к MongoDB
-mongoose.connect('mongodb://admin:password123@localhost:27017/admin')
+// Подключение к MongoDB (если используется)
+mongoose.connect('mongodb://localhost:27017/your-db-name', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -30,7 +36,8 @@ mongoose.connect('mongodb://admin:password123@localhost:27017/admin')
     console.error('Failed to connect to MongoDB', err);
   });
 
-// Запуск сервера
+// Запуск сервера на порту 3001 (для фронтенда будет прокси)
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
