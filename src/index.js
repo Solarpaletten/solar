@@ -1,43 +1,28 @@
-// Импорт необходимых модулей
 const express = require('express');
-const mongoose = require('mongoose');  // Если используется MongoDB, можно удалить если PostgreSQL
-const bodyParser = require('body-parser');
 const cors = require('cors');
-
-require('dotenv').config();
-
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-
-// Инициализация приложения Express
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Middleware для обработки JSON и CORS
-app.use(bodyParser.json());
+// Включение CORS для общения с фронтендом
 app.use(cors());
 
-// Пример маршрута
-app.get('/api/data', (req, res) => {
-  res.json({ message: 'Hello from the backend!' });
+// Заглушка для данных
+const mockData = [
+  { id: 1, name: 'Item 1', description: 'This is item 1' },
+  { id: 2, name: 'Item 2', description: 'This is item 2' },
+];
+
+// Корневой маршрут
+app.get('/', (req, res) => {
+  res.send('Бэкенд успешно работает');
 });
 
-// Подключение к MongoDB (если используется)
-mongoose.connect('mongodb://localhost:27017/your-db-name', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error('Failed to connect to MongoDB', err);
-  });
+// Эндпоинт для получения данных
+app.get('/api/items', (req, res) => {
+  res.json(mockData);
+});
 
-// Запуск сервера на порту 3001 (для фронтенда будет прокси)
-const PORT = process.env.PORT || 3001;
+// Запуск сервера
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
