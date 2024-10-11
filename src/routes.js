@@ -1,9 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const client = require('./db');
 
-// Эндпоинт для данных
-router.get('/data', (req, res) => {
-  res.json({ message: 'Успешное подключение к /api/data' });
+// Маршрут для добавления нового клиента
+router.post('/clients', (req, res) => {
+  const { name, email } = req.body;
+  const query = 'INSERT INTO clients (name, email) VALUES ($1, $2) RETURNING *';
+
+  client.query(query, [name, email], (err, result) => {
+    if (err) {
+      console.error('Ошибка при добавлении клиента:', err);
+      res.status(500).json({ error: 'Ошибка при добавлении клиента' });
+    } else {
+      res.json({ message: 'Клиент успешно добавлен', client: result.rows[0] });
+    }
+  });
 });
 
 module.exports = router;
