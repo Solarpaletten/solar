@@ -1,26 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const routes = require('./routes'); // Подключение всех маршрутов
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Включение CORS для общения с фронтендом
 app.use(cors());
 
-// Заглушка для данных
-const mockData = [
-  { id: 1, name: 'Item 1', description: 'This is item 1' },
-  { id: 2, name: 'Item 2', description: 'This is item 2' },
-];
+// Middleware для обработки JSON запросов
+app.use(bodyParser.json());
 
 // Корневой маршрут
 app.get('/', (req, res) => {
   res.send('Бэкенд успешно работает');
 });
 
-// Эндпоинт для получения данных
-app.get('/api/items', (req, res) => {
-  res.json(mockData);
-});
+// Подключение маршрутов из файла routes.js
+app.use('/api', routes);
 
 // Запуск сервера
 app.listen(PORT, () => {

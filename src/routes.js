@@ -1,16 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getTransactions, addTransaction } = require('./controllers');
 
-// Маршрут для получения всех транзакций
-router.get('/transactions', getTransactions);
-
-// Маршрут для добавления новой транзакции
-router.post('/transactions', addTransaction);
-
-// Тестовый маршрут для проверки работы API
-router.get('/', (req, res) => {
-  res.send('API is working!');
+// Эндпоинт для данных
+router.get('/data', (req, res) => {
+  res.json({ message: 'Успешное подключение к /api/data' });
 });
 
 module.exports = router;

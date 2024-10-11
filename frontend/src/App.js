@@ -14,10 +14,9 @@ function App() {
   return (
     <div className="App">
       <h1>Фронтенд с React</h1>
-      {data ? <p>{data.message}</p> : <p>Загрузка данных...</p>}
+      {data ? <p>{data.message}</p> : <p>Загрузка данных Solar...</p>}
     </div>
   );
 }
 
 export default App;
-// Task 3
