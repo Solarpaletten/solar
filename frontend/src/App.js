@@ -16,24 +16,24 @@ function App() {
         body: JSON.stringify({ name, email, phone }),
       });
       if (response.ok) {
-        alert('Клиент успешно добавлен!');
+        alert('Client added successfully!');
       } else {
-        alert('Ошибка при добавлении клиента');
+        alert('Error adding client');
       }
     } catch (error) {
-      console.error('Ошибка при добавлении клиента:', error);
-      alert('Ошибка подключения к серверу');
+      console.error('Error adding client:', error);
+      alert('Error connecting to the server');
     }
   };
 
   return (
     <div>
-      <h1>Клиенты</h1>
-      <h2>Добавить клиента</h2>
+      <h1>Clients</h1>
+      <h2>Add a Client</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Имя"
+          placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -45,11 +45,11 @@ function App() {
         />
         <input
           type="text"
-          placeholder="Телефон"
+          placeholder="Phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
-        <button type="submit">Добавить</button>
+        <button type="submit">Add</button>
       </form>
     </div>
   );
