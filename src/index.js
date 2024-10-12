@@ -1,56 +1,25 @@
-require('dotenv').config(); // Load dotenv to read environment variables from .env
+require('dotenv').config(); // Подключаем dotenv для загрузки переменных из .env
 
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { Client } = require('pg');
-
-// Connect to PostgreSQL database
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-client.connect()
-  .then(() => console.log('Successfully connected to the PostgreSQL database'))
-  .catch(err => console.error('Database connection error:', err.stack));
+const clientRoutes = require('./routes'); // Подключаем маршруты для работы с клиентами
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors()); // Разрешаем кросс-доменные запросы
+app.use(bodyParser.json()); // Позволяет парсить JSON в запросах
 
-// Route to add a client
-app.post('/api/clients', (req, res) => {
-  const { name, email, phone } = req.body;
+// Подключаем маршруты для работы с клиентами
+app.use('/api/clients', clientRoutes);
 
-  const query = 'INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3)';
-  client.query(query, [name, email, phone], (err, result) => {
-    if (err) {
-      console.error('Error adding client:', err);
-      res.status(500).json({ error: 'Server error' });
-    } else {
-      res.status(201).json({ message: 'Client added successfully' });
-    }
-  });
+// Добавляем маршрут для корневого пути "/"
+app.get('/', (req, res) => {
+  res.send('Сервер работает! Добро пожаловать в API клиентов.');
 });
 
-// Route to get all clients
-app.get('/api/clients', (req, res) => {
-  client.query('SELECT * FROM clients', (err, result) => {
-    if (err) {
-      console.error('Query execution error:', err);
-      res.status(500).json({ error: 'Query execution error' });
-    } else {
-      res.json(result.rows); // Return all clients in JSON format
-    }
-  });
-});
-
-// Start server
+// Запускаем сервер
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Сервер запущен на порту ${PORT}`);
 });
